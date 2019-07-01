@@ -4,17 +4,16 @@ Created on Sat Jun 29 09:10:04 2019
 
 @author: Brodie
 
-This still does not work, but I want to upload it to show some progress on
-my 100 days of coding.
+Brownian walk in an array.
+
+# TODO: Need to add labels.
+# TODO: Not utilizing the dt.
 """
 import matplotlib.pyplot as plt
-from scipy.stats import norm
 import numpy as np
 
-# Initial condition.
-x = 0.0
-x0 = 0
-x0 = np.asarray(x0)
+# Initiale condition
+x = np.zeros((1000,100))
 
 # Number of iterations to compute.
 n = 100
@@ -22,14 +21,21 @@ n = 100
 # number of realizations to compute
 m = 1000
 
-
-x = np.zeros((1000,100))
+# Time step
 dt = 1/n
 
-x[:3] = np.random.uniform(-1, 1, 100)
+x[:1] = np.random.uniform(-1, 1, 100)
 
-for k in range(m):
-    x[k,:] = np.random.uniform(-1, 1, 50)
+for k in range(1, len(x)):
+    x[k:k + 1] = x[k-1:k] + np.random.uniform(-1, 1, 100)
 
-plt.plot(r)
+plt.plot(x[0], c='k')
 
+# How much it's above zero
+w = np.array(x[0] > 0)
+
+# How much it's below zero
+u = np.array(x[0] < 0)
+
+# Proportion of time it's above zero
+v = sum(w) / len(x[0])
