@@ -76,72 +76,155 @@ Move the block in (4, 2) to (4, 1).
 
 So, 1 + 1 + 1 + 1 + 1 + 1 + 1 + 12 + 1 = 20.
 """
+import copy
 
-
-def WhichDir(chip, goal):
-    wd = [(goal[0] - chip[0]), (goal[1] - chip[1])]
+def WhichDir(d, empty_or_chip='E'):
+    """
+    Creates a vector of which way I want to move. Either the chip towards the
+    goal, or the empty cel towards the next chip move
+    Takes:
+        Dictionary of all variables
+        **kwargs:
+            empty_or_chip as 'E' or 'C'
+                default is 'E', meaning where I want to move the empty space to
+                'C' is where I want to move the chip to
+    """
+    wd = []
+    if empty_or_chip == 'E':
+        vr = d['empty'] # place I am coming from
+        f = d['wiw'] # place I am going towards
+    elif empty_or_chip == 'C':
+        vr = d['chip']
+        f = d['goal']
+    # Y direction
+    if vr[0] < chip[0]:
+        wd.append(goal[0] - chip[0])
+    else:  # I need the first coordinate to be pos
+        wd.append(chip[0] - goal[0])
+    # X direction
+    if goal[1] < chip[1]:
+        wd.append(goal[1] - chip[1])
+    else:
+        wd.append(chip[1] - goal[1])
     return wd
 
 
-def MakeVB(board, empty, chip, goal):
-    vb = board
-    vb[empty[0]][empty[1]] = 'E'
-    vb[chip[0]][chip[1]] = 'C'
-    vb[goal[0]][goal[1]] = 'G'
+def MakeVB(d):
+    vb = copy.deepcopy(d['oboard'])
+    vb[d['empty'][0]][d['empty'][1]] = 'E'
+    vb[d['chip'][0]][d['chip'][1]] = 'C'
+    vb[d['goal'][0]][d['goal'][1]] = 'G'
     return vb
 
 
-def CanI(chip, wd, empty, board):
-    direction = str()
-    if wd[0] > 0 and board[chip[0] + 1][chip[1]] == 'E':
-        direction = '+x'
-    elif wd[1] > 0 and board[chip[0]][chip[1] + 1] == 'E':
-        direction = '+y'
-    elif wd[0] < 0 and board[chip[0] - 1][chip[1]] == 'E':
-        direction = '-x'
-    elif wd[1] < 0 and board[chip[0]][chip[1] - 1] == 'E':
-        direction = '-y'
-    else:
-        direction = False
-    return direction
+def CanI(d):
+    """
+    Decides if the coordinates I want to move the chip to are
+    empty, full, or immovable.
+    Returns:
+        'E' for empty
+        'F' for full
+        'I' for immovable
+    """
+    if d['vboard'][wiw[0]][wiw[1]] == empty:
+        yn = 'E'
+    elif d['vboard'][wiw[0]][wiw[1]] == 1:
+        yn = 'F'
+    elif d['oboard'][wiw[0]][wiw[1]] == 0:
+        yn = 'I'
+    return yn
 
 
-def WhrIWant():
-    pass
+def WhrIWant(d):
+    """
+    Gives the coordinates of where I want to move the chip to.
+    """
+    wiw = []
+
+    # Y direction moves
+    if wd[0] == 0:
+        wiw.append(int(chip[0]))
+    elif wd[0] > 0:
+        wiw.append(int(chip[0]) + 1)
+    elif wd[0] < 0:
+        wiw.append(int(chip[0]) - 1)
+
+    # X direction moves
+    if wd[1] == 0:
+        wiw.append(chip[1])
+    elif wd[1] > 0:
+        wiw.append(int(chip[1]) + 1)
+    elif wd[1] < 0:
+        wiw.append(int(chip[1]) - 1)
+
+    return wiw
 
 
 def FsRte():
+    route_nums = []
+    lengths = []
+    routes = []
+    cntr = 1
+    # find dir
+    more = True
+    while more:
+        new_route_list = []
+        move_vec = [(empty[0] - wiw[0]), (empty[1] - wiw[1])]
+        if move_vec[0] == 0:
+            y_e_move = 0
+        elif move_vec[0] >= 0 and board[empty[0] + 1, empty[1]] != 0:
+            new_route_list.append(board[empty[0] + 1, empty[1]])
+        routes.append(new_route_list)
+    move_vec = [(empty[0] - wiw[0]), (empty[1] - wiw[1])]
     pass
+"""
+[1, 1, 1, 1, 'E']
+[1, 1, 1, 1, 1]
+[0, 1, 1, 1, 1]
+['G', 1, 'C', 1, 1]
+[0, 1, 0, 1, 1]
+"""
 
 
 def MvEm():
+    # reset empty
+    board[empty[0]][empty[1]] = 1
+    board[
     pass
 
 
 def huarongdao(k, board, queries):
-    answer = 0
-    empty = [queries[0] - 1, queries[1] - 1]
-    chip = [queries[2] - 1, queries[3] - 1]
-    goal = [queries[4] - 1, queries[5] - 1]
+    huge_dict = {}
+    huge_dict['oboard'] = board
+    huge_dict['answer'] = 0
+    huge_dict['empty'] = [queries[0] - 1, queries[1] - 1]
+    huge_dict['chip'] = [queries[2] - 1, queries[3] - 1]
+    huge_dict['goal'] = [queries[4] - 1, queries[5] - 1]
 
-    # build a board that is easier for me to visualize
-    vb = MakeVB(board, empty, chip, goal)
+    # build a visual board that I can change and keep variables straight
+    # in my head
+    huge_dict['vboard'] = MakeVB(huge_dict)
 
     # which direction to go
-    wd = WhichDir(chip, goal)
+    huge_dict['wd'] = WhichDir(huge_dict, empty_or_chip='C')
+
+    # Where I want to move
+    huge_dict['wiw'] = WhrIWant(huge_dict)
 
     # can I go that way?
-    ci = CanI(chip, wd, empty, board)
+    huge_dict['ci'] = CanI(huge_dict)
 
     while not ci:
-        # Where I want to move
-        wiwtm = WhrIWant()
-        ci = CanI(chip, wd, empty, board)
+        wiw = WhrIWant()
+        ci = CanI(wiw, empty, board)
         # Calculate fastest route
-        fr = FsRte()
-        # Move them
-        mt = MvEm()
-    return 5
+        if not ci:
+            fr = FsRte(wiw, board)
+            # Move them
+            board, answer = MvEm(fr, answer, board)
+        elif ci:
+            board, answer = MvEm(fr, answer, board)
+    return answer
 
 
 board = [[1, 1, 1, 1, 1],
