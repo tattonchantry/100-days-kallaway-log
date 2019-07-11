@@ -17,8 +17,8 @@ plt.scatter(X[:, 0], X[:, 1], s = 170, color = Y[:])
 
 t1 = plt.Polygon(X[:3,:], color=Y[0])
 plt.gca().add_patch(t1)
-
-t2 = plt.Polygon(X[3:6,:], color=Y[3])
-plt.gca().add_patch(t2)
+#
+#t2 = plt.Polygon(X[3:6,:], color=Y[3])
+#plt.gca().add_patch(t2)
 
 plt.show()
