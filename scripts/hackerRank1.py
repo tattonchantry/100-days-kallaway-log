@@ -176,4 +176,69 @@ def printer(n):
 n = 5
 printer(n)
 
+# %% List comprehensions
+def double(x):
+    return x*2
+[double(x) for x in range(10) if x%2==0]
 
+# %% List comprehensions
+x = 2
+y = 2
+z = 2
+n = 2
+ar = []
+p = 0
+for i in range(x + 1):
+    for j in range(y + 1):
+        if (i+j) != n:
+            ar.append([])
+            ar[p] = [i, j]
+            p += 1
+            print(ar)
+[[i,j] for i in range(x + 1) for j in range(y + 1) if ((i + j) != n)]
+[[i, j, k] for i in range(x + 1) for j in range(y + 1) for k in range (z + 1) if ((i + j + k) != n)]
+
+# %% find runner up
+
+ins = """
+5
+2 3 6 6 5
+"""
+#z = max(arr)
+#while max(arr) == z:
+#    arr.remove(max(arr))
+#
+#print(max(arr))
+
+n = int(ins)
+arr = list(map(int, ins.split()))
+z = max(arr)
+while max(arr) == z:
+    arr.remove(max(arr))
+
+print(max(arr))
+
+#%%
+
+scli = [['Harry', 37.21],
+        ['Berry', 37.21],
+        ['Tina', 37.2],
+        ['Akriti', 41.0],
+        ['Harsh', 39.0]]
+scores = [37.21, 37.21, 37.2, 41.0, 39.0]
+names = ['Harry', 'Berry', 'Tina', 'Akriti', 'Harsh']
+z = min(scores)
+while min(scores) == z:
+    scores.remove(min(scores))
+results = []
+for i in scli:
+    if i[1] == min(scores):
+        results.append(i[0])
+results.sort()
+print(results)
+
+#%%
+query_name = 'Malika'
+scores = [52.0, 56.0, 60.0]
+student_marks = {'Krishna': [67.0, 68.0, 69.0], 'Arjun': [70.0, 98.0, 63.0], 'Malika': [52.0, 56.0, 60.0]}
+print(round(sum(student_marks[query_name])/len(student_marks[query_name]), 2))
